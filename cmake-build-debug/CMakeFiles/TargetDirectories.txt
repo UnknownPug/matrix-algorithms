@@ -1,3 +1,0 @@
-/Users/dmitry1/Desktop/CVUT/3. rok/5. semestr/PCC/Semestralni prace/matrix-algorithms/cmake-build-debug/CMakeFiles/matrix_mult.dir
-/Users/dmitry1/Desktop/CVUT/3. rok/5. semestr/PCC/Semestralni prace/matrix-algorithms/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/dmitry1/Desktop/CVUT/3. rok/5. semestr/PCC/Semestralni prace/matrix-algorithms/cmake-build-debug/CMakeFiles/rebuild_cache.dir
