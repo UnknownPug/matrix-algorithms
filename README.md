@@ -1,4 +1,6 @@
-# Multiplication of matrices
+# This program was created as a semester project of the PCC
+
+## Multiplication of matrices
 
 ## (CTU - SIT winter semester 2023)
 
