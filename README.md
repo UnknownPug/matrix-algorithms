@@ -224,7 +224,7 @@ Invalid input for matrix element
 
 ### Testing <a name="testing"></a>
 
-The project contains [testing folder]() where you can find different matrices and their multiplication results.
+The project contains [testing folder](https://github.com/UnknownPug/matrix-algorithms/tree/main/testing) where you can find different matrices and their multiplication results.
 -- --
 
 ### Measurements <a name="measurements"></a>
