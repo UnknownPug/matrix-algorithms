@@ -58,12 +58,11 @@ multiplication process through parallel computation.
 
 ##### Language Extensions:
 
-The code does not use any explicit language extensions like OpenMP or variable length arrays (VLA). It appears to use
-standard C++ features and libraries.
+The code does not use any explicit language extensions like OpenMP or variable length arrays (VLA). It uses standard C++ functions and libraries.
 
 ##### Non-portable Libraries:
 
-The code does not appear to use non-portable libraries such as POSIX or Win32. It relies on standard C++ libraries for
+The code does not using non-portable libraries such as POSIX or Win32. It relies on standard C++ libraries for
 input/output and vector operations.
 
 ### Running project <a name="running"></a>
@@ -92,13 +91,13 @@ g++ -O3 -o matrix_mult  matrix_mult.cpp
 
 #### Help:
 
-If you want to get help, you need to write this command in the terminal:
+If you want to get help, you need to write this command:
 
 ```shell
 ./matrix_mult --help
 ```
 
-And you will see this description in the terminal:
+And you will see this description:
 
 ``` 
 Matrix Multiplication Program
@@ -122,10 +121,8 @@ If you try calling another options that is not exist, you will get invalid messa
 After running the program, you will see the following interactive process in the terminal:
 
 1) The program will prompt you to enter the dimensions of square matrices A and B.
-2) After entering the dimensions of matrices A and B, the program will prompt you to enter the elements of both matrices
-   in turn.
-3) The program will display the actions of multiplication of numbers by each other and the matrix obtained after
-   multiplication.
+2) After entering the dimensions of matrices A and B, the program will prompt you to enter the elements of both matrices in turn.
+3) The program will display the actions of multiplication of numbers by each other and the matrix obtained after multiplication.
 4) The program will then exit.
 
 #### Example:
