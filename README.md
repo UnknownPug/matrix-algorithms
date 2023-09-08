@@ -39,10 +39,10 @@ Velebil, Ph.D. ([Algebra of matrices](https://math.fel.cvut.cz/en/people/velebil
 
 ### Implementation <a name="implementation"></a>
 
-##### Programme functionality:
+##### Program functionality:
 
 - The program asks the user for the dimensions of matrices A and B (number of rows and columns).
-- After entering the dimensions, the programme asks for the elements of matrices A and B one by one.
+- After entering the dimensions, the program asks for the elements of matrices A and B one by one.
 - The matrices A and B are multiplied and the result is displayed on the screen.
 
 ##### Multiple Threads:
