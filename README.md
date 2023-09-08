@@ -4,7 +4,7 @@
 
 ## (CTU - SIT winter semester 2023)
 
-### Author: Dmitrij Rastvorov
+### Author: Dmitry Rastvorov
 
 -- -- 
 
