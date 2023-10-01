@@ -54,7 +54,6 @@ void printMatrix(const vector<vector<int> > &matrix) {
     }
 }
 
-// TODO: Implement instead of Naive Algorithm a Coppersmith-Winograd Algorithm
 vector<vector<int> > multiplyMatrices(const vector<vector<int> > &A, const vector<vector<int> > &B) {
 
     int m = static_cast<int>(A.size());
