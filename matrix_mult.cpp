@@ -5,8 +5,14 @@
 #include <iomanip>
 #include <string>
 #include <cstring>
+#include <chrono>
 
 using namespace std;
+
+template<typename TimePoint>
+std::chrono::milliseconds to_ms(TimePoint tp) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(tp);
+}
 
 // Function to read a matrix from user input
 vector<vector<int> > readMatrix(int rows, int cols) {
@@ -54,8 +60,8 @@ void printMatrix(const vector<vector<int> > &matrix) {
     }
 }
 
-vector<vector<int> > multiplyMatrices(const vector<vector<int> > &A, const vector<vector<int> > &B) {
-
+// Coppersmith - Winograd algorithm for matrix multiplication and using SMID for effectivity
+vector<vector<int> > coppersmithMultiply(const vector<vector<int> > &A, const vector<vector<int> > &B) {
     int m = static_cast<int>(A.size());
     int n = static_cast<int>(A[0].size());
     int p = static_cast<int>(B[0].size());
@@ -66,7 +72,7 @@ vector<vector<int> > multiplyMatrices(const vector<vector<int> > &A, const vecto
     for (int i = 0; i < m; ++i) {
         for (int j = 0; j < p; ++j) {
             int sum = 0;
-            for (int k = 0; k < n - 3; k += 4) { // SMID - Single Instruction Multiple Data
+            for (int k = 0; k < n - 3; k += 4) { // SMID (Single Instruction Multiple Data) implementation
                 sum += A[i][k] * B[k][j];
                 sum += A[i][k + 1] * B[k + 1][j];
                 sum += A[i][k + 2] * B[k + 2][j];
@@ -81,7 +87,7 @@ vector<vector<int> > multiplyMatrices(const vector<vector<int> > &A, const vecto
     return result;
 }
 
-vector<vector<int> > addMatrix(const vector<vector<int> >& A, const vector<vector<int> >& B) {
+vector<vector<int> > addMatrix(const vector<vector<int> > &A, const vector<vector<int> > &B) {
     vector<vector<int> >::size_type n = A.size();
     vector<vector<int> > result(n, vector<int>(n, 0));
     for (vector<vector<int> >::size_type i = 0; i < n; i++) {
@@ -92,7 +98,7 @@ vector<vector<int> > addMatrix(const vector<vector<int> >& A, const vector<vecto
     return result;
 }
 
-vector<vector<int> > subtractMatrix(const vector<vector<int> >& A, const vector<vector<int> >& B) {
+vector<vector<int> > subtractMatrix(const vector<vector<int> > &A, const vector<vector<int> > &B) {
     vector<vector<int> >::size_type n = A.size();
     vector<vector<int> > result(n, vector<int>(n, 0));
     for (vector<vector<int> >::size_type i = 0; i < n; i++) {
@@ -104,7 +110,7 @@ vector<vector<int> > subtractMatrix(const vector<vector<int> >& A, const vector<
 }
 
 // Strassen's Algorithm for matrix multiplication
-vector<vector<int> > strassenMultiply(const vector<vector<int> >& A, const vector<vector<int> >& B) {
+vector<vector<int> > strassenMultiply(const vector<vector<int> > &A, const vector<vector<int> > &B) {
     vector<vector<int> >::size_type n = A.size();
 
     // Base case: If the matrix size is 1x1, just multiply the elements.
@@ -184,18 +190,18 @@ vector<vector<int> > strassenMultiply(const vector<vector<int> >& A, const vecto
             result[i][j] = C[i][j];
         }
     }
-
     return result;
 }
 
 // Function to display help information
 void displayHelp() {
+    std::cout << "--------- HELP ---------\n";
     std::cout << "Matrix Multiplication Program\n";
     std::cout << "This program performs matrix multiplication of two matrices using different algorithms.\n";
     std::cout << "Usage: ./matrix_mult [options]\n";
     std::cout << "Options:\n";
     std::cout << "  --help    Display this help message\n";
-    std::cout << "  --naive Use Naive Algorithm for multiplication (default)\n";
+    std::cout << "  --copsmth Use Coppersmith Winograd Algorithm for multiplication (default)\n";
     std::cout << "  --strassen Use Strassen's Algorithm for multiplication\n";
     std::cout << "Description:\n";
     std::cout
@@ -205,9 +211,7 @@ void displayHelp() {
     std::cout
             << "    - After entering the dimensions of matrices A and B, "
                "the program will prompt you to enter the elements of both matrices in turn.\n";
-    std::cout
-            << "    - The program will display the actions of multiplication of numbers by each other"
-               " and the matrix obtained after multiplication.\n";
+    std::cout << "    - The program will display the result of the multiplication.\n";
     std::cout << "    - The program will then exit.\n";
 }
 
@@ -221,11 +225,19 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    string algorithm = "naive"; // Default algorithm is a Naive Algorithm
+    string algorithm = "copsmth"; // Default algorithm is a Coppersmith Winograd Algorithm
 
-    if (argc > 2) {
-        if (strcmp(argv[2], "--strassen") == 0) {
+    if (argc > 1) {
+        if (strcmp(argv[1], "--strassen") == 0) {
             algorithm = "strassen";
+        } else if (strcmp(argv[1], "--copsmth") == 0) {
+            algorithm = "copsmth";
+        } else if (strcmp(argv[1], "--help") == 0) {
+            displayHelp();
+            return 0;
+        } else {
+            std::cerr << "Unknown command: " << argv[1] << "\n";
+            return 1;
         }
     }
 
@@ -339,10 +351,16 @@ int main(int argc, char *argv[]) {
 
     vector<vector<int> > result;
 
-    if (algorithm == "naive") {
-        result = multiplyMatrices(matrixA, matrixB);
-    } else if (algorithm == "strassen") {
+    if (algorithm == "copsmth") { // Coppersmith Winograd Algorithm runs by default
+        auto start = std::chrono::high_resolution_clock::now();
+        result = coppersmithMultiply(matrixA, matrixB);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::cout << "(Coppersmith Winograd Algorithm) Needed " << to_ms(end - start).count() << " ms to finish.\n";
+    } else if (algorithm == "strassen") { // Strassen's Algorithm runs if selected
+        auto start = std::chrono::high_resolution_clock::now();
         result = strassenMultiply(matrixA, matrixB);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::cout << "\n(Strassen's Algorithm) Needed " << to_ms(end - start).count() << " ms to finish.\n";
     } else {
         std::cerr << "Invalid algorithm selection\n";
         return 1;

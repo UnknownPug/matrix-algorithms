@@ -31,10 +31,13 @@ The program represents a calculator for matrix multiplication.
 
 ### Description <a name="description"></a>
 
-Matrix multiplication is one of the most interesting topics in linear algebra. In this program we can set the number of
-rows and columns for each matrix, specify the numbers and get the answer with a description of the operations of the
-obtained result. The matrix implementation was inspired by the presentations of the course B6B01LAG Doc.RNDr. Jiří
-Velebil, Ph.D. ([Algebra of matrices](https://math.fel.cvut.cz/en/people/velebil/files/b6b01lag/lag_handout04b.pdf)).
+Matrix multiplication is one of the most interesting topics in linear algebra.
+In this program, we can set the number of rows and columns for each matrix,
+specify the numbers and get the answer with a description of the operations performed on the result.
+The matrix implementation was inspired by the presentations of the course B6B01LAG Doc.RNDr.
+Jiří Velebil,
+Ph.D. ([Algebra of matrices](https://math.fel.cvut.cz/en/people/velebil/files/b6b01lag/lag_handout04b.pdf))
+and also by Abdul Bari's video ([Strassen's Matrix Multiplication](https://www.youtube.com/watch?v=0oJyNmEbS4w))
 -- --
 
 ### Implementation <a name="implementation"></a>
@@ -43,7 +46,7 @@ Velebil, Ph.D. ([Algebra of matrices](https://math.fel.cvut.cz/en/people/velebil
 
 - The program asks the user for the dimensions of matrices A and B (number of rows and columns).
 - After entering the dimensions, the program asks for the elements of matrices A and B one by one.
-- The matrices A and B are multiplied and the result is displayed on the screen.
+- The matrices A and B are multiplied, and the result is displayed on the screen.
 
 ##### Multiple Threads:
 
@@ -52,22 +55,24 @@ is no use of multithreading or parallelism. The multiplication is done using sin
 
 ##### Single Thread Optimized Implementation:
 
-The program is optimised for matrix multiplication using SIMD (Single Instruction Multiple Data) instructions, which
-allow a single instruction to perform operations on multiple data simultaneously. This speeds up the matrix
-multiplication process through parallel computation.
+The code includes implementations of several matrix multiplication algorithms,
+including the Coppersmith–Winograd algorithm and Strassen's Algorithm.
+The program allows the user to choose between these algorithms and input two matrices for multiplication.
 
 ##### Language Extensions:
 
-The code does not use any explicit language extensions like OpenMP or variable length arrays (VLA). It uses standard C++ functions and libraries.
+The code does not use any explicit language extensions like OpenMP or variable length arrays (VLA). 
+It uses standard C++ functions and libraries.
 
 ##### Non-portable Libraries:
 
-The code does not using non-portable libraries such as POSIX or Win32. It relies on standard C++ libraries for
-input/output and vector operations.
+The code does not use non-portable libraries such as POSIX or Win32.
+It relies on standard C++ libraries for input/output and vector operations.
 
 ### Running project <a name="running"></a>
 
-If you are using CLion, you can run the program by opening the project ``matrix_mult.cpp`` and clicking the Run button.
+If you are using CLion, you can run the program by opening the project ``matrix_mult.cpp`` and clicking the **Run**
+button.
 
 Or you can run the program in the terminal by following these steps:
 
@@ -101,28 +106,31 @@ And you will see this description:
 
 ``` 
 Matrix Multiplication Program
-This program performs matrix multiplication of two square matrices.
+This program performs matrix multiplication of two matrices using different algorithms.
 Usage: ./matrix_mult [options]
 Options:
---help    Display this help message
+  --help    Display this help message
+  --copsmth Use Coppersmith Winograd Algorithm for multiplication (default)
+  --strassen Use Strassen's Algorithm for multiplication
 Description:
-After running the matrix_mult program, you will see the following interactive process in the terminal:
-- The program will prompt you to enter the dimensions of square matrices A and B.
-- After entering the dimensions of matrices A and B, the program will prompt you to enter the elements of both matrices in turn.
-- The program will display the actions of multiplication of numbers by each other and the matrix obtained after multiplication.
-- The program will then exit.
+After running the matrix_mult program, you will see the following interactive process in the terminal: 
+    - The program will prompt you to enter the dimensions of square matrices A and B.
+    - After entering the dimensions of matrices A and B, the program will prompt you to enter the elements of both matrices in turn.
+    - The program will display the result of the multiplication.
+    - The program will then exit.
 ```
 
-If you try calling another options that is not exist, you will get invalid message:
-``Unknown switch: [your written switch]``
+If you try calling another option that does not exist, you will get an invalid message:
+``Unknown command: [your written switch]``
 
 #### Scenario
 
 After running the program, you will see the following interactive process in the terminal:
 
 1) The program will prompt you to enter the dimensions of square matrices A and B.
-2) After entering the dimensions of matrices A and B, the program will prompt you to enter the elements of both matrices in turn.
-3) The program will display the actions of multiplication of numbers by each other and the matrix obtained after multiplication.
+2) After entering the dimensions of matrices A and B, the program will prompt you to enter the elements of both matrices
+   in turn.
+3) The program will display the result of the multiplication.
 4) The program will then exit.
 
 #### Example:
@@ -141,11 +149,6 @@ Enter matrix A (2x2):
 Enter matrix B (2x2):
 5 6
 7 8
-
-c11 = 1 * 5 + 2 * 7 = 19
-c12 = 1 * 6 + 2 * 8 = 22
-c21 = 3 * 5 + 4 * 7 = 43
-c22 = 3 * 6 + 4 * 8 = 50
 
 Result:
    19	   22	
@@ -221,41 +224,47 @@ Invalid input for matrix element
 
 ### Testing <a name="testing"></a>
 
-The project contains [testing folder](https://github.com/UnknownPug/matrix-algorithms/tree/main/testing) where you can find different matrices and their multiplication results.
+The project contains [testing folder](https://github.com/UnknownPug/matrix-algorithms/tree/main/testing) where you can
+find different matrices and their multiplication results.
 -- --
 
 ### Measurements <a name="measurements"></a>
 
-Measurements were performed on an 8-core Apple M1 3.2GHz CPU with 16GB of RAM.
+Measurements were performed on an 8-core Apple M1 3.2GHz CPU.
 
-To measure the time, I used the ``chrono`` library.
+To measure the code rate time, the following was used:
 
-##### This is the result of the measurements by running the program in the CLion:
+1) ``chrono`` library:
 
-| File          | Type      | Single-threaded |
-|---------------|-----------|-----------------|
-| testing_1.txt | 2x2       | < 1 ms          |
-| testing_2.txt | 3x3       | < 1 ms          |
-| testing_3.txt | 4x4       | < 1 ms          |
-| testing_4.txt | 5x5       | < 1 ms          |
-| testing_5.txt | different | < 1 ms          |
-| testing_6.txt | 10x10     | < 1 ms          |
-| testing_7.txt | 12x12     | < 2 ms          |
-| testing_8.txt | 15x15     | ~ 2 ms          |
-| testing_9.txt | 20x20     | ~ 6 ms          |
+```c++
+template <typename TimePoint>
+std::chrono::milliseconds to_ms(TimePoint tp) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(tp);
+}
+ 
+ 
+int main() {
+    auto start = std::chrono::high_resolution_clock::now();
+    // do work
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout << "Needed " << to_ms(end - start).count() << " ms to finish.\n";
+}
+```
 
-##### This is the result of the measurements by running the program in the terminal with the optimization:
+2) [Testing folder](https://github.com/UnknownPug/matrix-algorithms/tree/main/testing) with different matrices.
 
-| File          | Type      | Single-threaded |
-|---------------|-----------|-----------------|
-| testing_1.txt | 2x2       | < 1 ms          |
-| testing_2.txt | 3x3       | < 1 ms          |
-| testing_3.txt | 4x4       | < 1 ms          |
-| testing_4.txt | 5x5       | < 1 ms          |
-| testing_5.txt | different | < 1 ms          |
-| testing_6.txt | 10x10     | ~ 4 ms          |
-| testing_7.txt | 12x12     | ~ 6 ms          |
-| testing_8.txt | 15x15     | ~ 11 ms         |
-| testing_9.txt | 20x20     | ~ 20 ms         |
+##### To demonstrate the result, I attach a table with files, matrix sizes, and algorithms (data are specified in milliseconds).
+
+| File          | Type      | Coppersmith Winograd Algorithm | Strassen's Algorithm                     |
+|---------------|-----------|--------------------------------|------------------------------------------|
+| testing_1.txt | 2x2       | 0.0 ms                         | 0.0 ms                                   |
+| testing_2.txt | 3x3       | 0.0 ms                         | 0.0 ms                                   |
+| testing_3.txt | 4x4       | 0.0 ms                         | 0.0 ms                                   |
+| testing_4.txt | 5x5       | 0.0 ms                         | ~1 ms                                    |
+| testing_5.txt | different | 0.0 ms                         | designed for multiplying square matrices |
+| testing_6.txt | 10x10     | ~4 ms                          | ~10 ms                                   |
+| testing_7.txt | 12x12     | ~6 ms                          | ~12 ms                                   |
+| testing_8.txt | 15x15     | ~11 ms                         | ~10 ms                                   |
+| testing_9.txt | 20x20     | ~20 ms                         | ~72 ms                                   |
 
 ## Thank you for your attention! 👨‍💻
