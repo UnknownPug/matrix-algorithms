@@ -54,6 +54,7 @@ void printMatrix(const vector<vector<int> > &matrix) {
     }
 }
 
+// TODO: Implement instead of Naive Algorithm a Coppersmith-Winograd Algorithm
 vector<vector<int> > multiplyMatrices(const vector<vector<int> > &A, const vector<vector<int> > &B) {
 
     int m = static_cast<int>(A.size());
@@ -76,16 +77,112 @@ vector<vector<int> > multiplyMatrices(const vector<vector<int> > &A, const vecto
                 sum += A[i][k] * B[k][j];
             }
             result[i][j] = sum;
+        }
+    }
+    return result;
+}
 
-            // Add a comment to explain how the element is calculated
-            cout << "c" << (i + 1) << (j + 1) << " = ";
-            for (int k = 0; k < n; ++k) {
-                cout << A[i][k] << " * " << B[k][j];
-                if (k < n - 1) {
-                    cout << " + ";
-                }
-            }
-            cout << " = " << result[i][j] << "\n";
+vector<vector<int> > addMatrix(const vector<vector<int> >& A, const vector<vector<int> >& B) {
+    vector<vector<int> >::size_type n = A.size();
+    vector<vector<int> > result(n, vector<int>(n, 0));
+    for (vector<vector<int> >::size_type i = 0; i < n; i++) {
+        for (vector<vector<int> >::size_type j = 0; j < n; j++) {
+            result[i][j] = A[i][j] + B[i][j];
+        }
+    }
+    return result;
+}
+
+vector<vector<int> > subtractMatrix(const vector<vector<int> >& A, const vector<vector<int> >& B) {
+    vector<vector<int> >::size_type n = A.size();
+    vector<vector<int> > result(n, vector<int>(n, 0));
+    for (vector<vector<int> >::size_type i = 0; i < n; i++) {
+        for (vector<vector<int> >::size_type j = 0; j < n; j++) {
+            result[i][j] = A[i][j] - B[i][j];
+        }
+    }
+    return result;
+}
+
+// Strassen's Algorithm for matrix multiplication
+vector<vector<int> > strassenMultiply(const vector<vector<int> >& A, const vector<vector<int> >& B) {
+    vector<vector<int> >::size_type n = A.size();
+
+    // Base case: If the matrix size is 1x1, just multiply the elements.
+    if (n == 1) {
+        vector<vector<int> > C(1, vector<int>(1, 0));
+        C[0][0] = A[0][0] * B[0][0];
+        return C;
+    }
+
+    // Pad matrices to the nearest power of 2
+    unsigned long newSize = 1;
+    while (newSize < n) {
+        newSize *= 2;
+    }
+    vector<vector<int> > A_padded(newSize, vector<int>(newSize, 0));
+    vector<vector<int> > B_padded(newSize, vector<int>(newSize, 0));
+
+    for (vector<vector<int> >::size_type i = 0; i < n; i++) {
+        for (vector<vector<int> >::size_type j = 0; j < n; j++) {
+            A_padded[i][j] = A[i][j];
+            B_padded[i][j] = B[i][j];
+        }
+    }
+
+    // Recursively compute sub-matrix products
+    vector<vector<int> > A11(newSize / 2, vector<int>(newSize / 2, 0));
+    vector<vector<int> > A12(newSize / 2, vector<int>(newSize / 2, 0));
+    vector<vector<int> > A21(newSize / 2, vector<int>(newSize / 2, 0));
+    vector<vector<int> > A22(newSize / 2, vector<int>(newSize / 2, 0));
+    vector<vector<int> > B11(newSize / 2, vector<int>(newSize / 2, 0));
+    vector<vector<int> > B12(newSize / 2, vector<int>(newSize / 2, 0));
+    vector<vector<int> > B21(newSize / 2, vector<int>(newSize / 2, 0));
+    vector<vector<int> > B22(newSize / 2, vector<int>(newSize / 2, 0));
+
+    for (vector<vector<int> >::size_type i = 0; i < newSize / 2; i++) {
+        for (vector<vector<int> >::size_type j = 0; j < newSize / 2; j++) {
+            A11[i][j] = A_padded[i][j];
+            A12[i][j] = A_padded[i][j + newSize / 2];
+            A21[i][j] = A_padded[i + newSize / 2][j];
+            A22[i][j] = A_padded[i + newSize / 2][j + newSize / 2];
+            B11[i][j] = B_padded[i][j];
+            B12[i][j] = B_padded[i][j + newSize / 2];
+            B21[i][j] = B_padded[i + newSize / 2][j];
+            B22[i][j] = B_padded[i + newSize / 2][j + newSize / 2];
+        }
+    }
+
+    vector<vector<int> > P1 = strassenMultiply(A11, subtractMatrix(B12, B22));
+    vector<vector<int> > P2 = strassenMultiply(addMatrix(A11, A12), B22);
+    vector<vector<int> > P3 = strassenMultiply(addMatrix(A21, A22), B11);
+    vector<vector<int> > P4 = strassenMultiply(A22, subtractMatrix(B21, B11));
+    vector<vector<int> > P5 = strassenMultiply(addMatrix(A11, A22), addMatrix(B11, B22));
+    vector<vector<int> > P6 = strassenMultiply(subtractMatrix(A12, A22), addMatrix(B21, B22));
+    vector<vector<int> > P7 = strassenMultiply(subtractMatrix(A11, A21), addMatrix(B11, B12));
+
+    // Calculate the result sub-matrices
+    vector<vector<int> > C11 = addMatrix(subtractMatrix(addMatrix(P5, P4), P2), P6);
+    vector<vector<int> > C12 = addMatrix(P1, P2);
+    vector<vector<int> > C21 = addMatrix(P3, P4);
+    vector<vector<int> > C22 = subtractMatrix(subtractMatrix(addMatrix(P5, P1), P3), P7);
+
+    // Combine the result sub-matrices into the final result
+    vector<vector<int> > C(newSize, vector<int>(newSize, 0));
+    for (vector<vector<int> >::size_type i = 0; i < newSize / 2; i++) {
+        for (vector<vector<int> >::size_type j = 0; j < newSize / 2; j++) {
+            C[i][j] = C11[i][j];
+            C[i][j + newSize / 2] = C12[i][j];
+            C[i + newSize / 2][j] = C21[i][j];
+            C[i + newSize / 2][j + newSize / 2] = C22[i][j];
+        }
+    }
+
+    // Remove padding to get the actual result
+    vector<vector<int> > result(n, vector<int>(n, 0));
+    for (vector<vector<int> >::size_type i = 0; i < n; i++) {
+        for (vector<vector<int> >::size_type j = 0; j < n; j++) {
+            result[i][j] = C[i][j];
         }
     }
 
@@ -95,10 +192,12 @@ vector<vector<int> > multiplyMatrices(const vector<vector<int> > &A, const vecto
 // Function to display help information
 void displayHelp() {
     std::cout << "Matrix Multiplication Program\n";
-    std::cout << "This program performs matrix multiplication of two square matrices.\n";
+    std::cout << "This program performs matrix multiplication of two matrices using different algorithms.\n";
     std::cout << "Usage: ./matrix_mult [options]\n";
     std::cout << "Options:\n";
     std::cout << "  --help    Display this help message\n";
+    std::cout << "  --naive Use Naive Algorithm for multiplication (default)\n";
+    std::cout << "  --strassen Use Strassen's Algorithm for multiplication\n";
     std::cout << "Description:\n";
     std::cout
             << "After running the matrix_mult program, you will see the following interactive process in the terminal: \n";
@@ -120,9 +219,14 @@ int main(int argc, char *argv[]) {
         if (strcmp(argv[1], "--help") == 0) {
             displayHelp();
             return 0;
-        } else {
-            std::cerr << "Unknown switch: " << argv[1] << "\n";
-            return 1;
+        }
+    }
+
+    string algorithm = "naive"; // Default algorithm is a Naive Algorithm
+
+    if (argc > 2) {
+        if (strcmp(argv[2], "--strassen") == 0) {
+            algorithm = "strassen";
         }
     }
 
@@ -136,15 +240,15 @@ int main(int argc, char *argv[]) {
         size_t pos;
         numRowsA = stoi(numRowsInputA, &pos);
         if (pos != numRowsInputA.size() || numRowsInputA[0] == '0') {
-            cerr << "Invalid input for number of rows for matrix A\n";
+            std::cerr << "Invalid input for number of rows for matrix A\n";
             return 1;
         }
         if (numRowsA <= 0) {
-            cerr << "Invalid number of rows for matrix A\n";
+            std::cerr << "Invalid number of rows for matrix A\n";
             return 1;
         }
     } catch (const invalid_argument &e) {
-        cerr << "Invalid input for number of rows for matrix A\n";
+        std::cerr << "Invalid input for number of rows for matrix A\n";
         return 1;
     }
 
@@ -189,7 +293,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Enter number of columns for matrix B: ";
     string numColsInputB;
-    getline(cin, numColsInputB);
+    getline(std::cin, numColsInputB);
     try {
         size_t pos;
         numColsB = stoi(numColsInputB, &pos);
@@ -234,7 +338,16 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    vector<vector<int> > result = multiplyMatrices(matrixA, matrixB);
+    vector<vector<int> > result;
+
+    if (algorithm == "naive") {
+        result = multiplyMatrices(matrixA, matrixB);
+    } else if (algorithm == "strassen") {
+        result = strassenMultiply(matrixA, matrixB);
+    } else {
+        std::cerr << "Invalid algorithm selection\n";
+        return 1;
+    }
 
     std::cout << "\nResult:\n";
     printMatrix(result);
