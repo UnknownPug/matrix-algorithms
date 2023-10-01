@@ -26,7 +26,7 @@
 
 ### Task <a name="task"></a>
 
-The program represents a calculator for matrix multiplication.
+The program represents a calculator for matrix multiplication with used 2 algorithms: Strassen's Algorithm and Coppersmith Winograd Algorithm.
 -- --
 
 ### Description <a name="description"></a>
