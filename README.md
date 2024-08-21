@@ -266,5 +266,3 @@ int main() {
 | testing_7.txt | 12x12     | ~6 ms                          | ~12 ms                                   |
 | testing_8.txt | 15x15     | ~11 ms                         | ~10 ms                                   |
 | testing_9.txt | 20x20     | ~20 ms                         | ~72 ms                                   |
-
-## Thank you for your attention! 👨‍💻
