@@ -34,7 +34,7 @@ The program represents a calculator for matrix multiplication with used 2 algori
 Matrix multiplication is one of the most interesting topics in linear algebra.
 In this program, we can set the number of rows and columns for each matrix,
 specify the numbers and get the answer with a description of the operations performed on the result.
-The matrix implementation was inspired by the presentations of the course B6B01LAG Doc.RNDr.
+The matrix implementation was inspired by the presentations of the course B6B01LAG Doc. RNDr.
 Jiří Velebil,
 Ph.D. ([Algebra of matrices](https://math.fel.cvut.cz/en/people/velebil/files/b6b01lag/lag_handout04b.pdf))
 and also by Abdul Bari's video ([Strassen's Matrix Multiplication](https://www.youtube.com/watch?v=0oJyNmEbS4w))
